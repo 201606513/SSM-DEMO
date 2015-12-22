@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+      http://www.springframework.org/schema/tx
+      http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+     ">
+    <!-- 数据源一-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc_url}"/>
+        <property name="username" value="${jdbc_username}"/>
+        <property name="password" value="${jdbc_password}"/>
+        <property name="filters" value="${jdbc_filters}"/>
+        <property name="maxActive" value="${jdbc_maxActive}"/>
+        <property name="initialSize" value="${jdbc_initialSize}"/>
+        <property name="maxWait" value="${jdbc_maxWait}"/>
+        <property name="minIdle" value="${jdbc_minIdle}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc_timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc_minEvictableIdleTimeMillis}"/>
+        <property name="validationQuery" value="${jdbc_validationQuery}"/>
+        <property name="testWhileIdle" value="${jdbc_testWhileIdle}"/>
+        <property name="testOnBorrow" value="${jdbc_testOnBorrow}"/>
+        <property name="testOnReturn" value="${jdbc_testOnReturn}"/>
+        <property name="poolPreparedStatements" value="${jdbc_poolPreparedStatements}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc_maxPoolPreparedStatementPerConnectionSize}"/>
+    </bean>
+    <!-- 数据源二-->
+    <bean id="hlcDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc_url_hlc}"/>
+        <property name="username" value="${jdbc_username_hlc}"/>
+        <property name="password" value="${jdbc_password_hlc}"/>
+        <property name="filters" value="${jdbc_filters_hlc}"/>
+        <property name="maxActive" value="${jdbc_maxActive_hlc}"/>
+        <property name="initialSize" value="${jdbc_initialSize_hlc}"/>
+        <property name="maxWait" value="${jdbc_maxWait_hlc}"/>
+        <property name="minIdle" value="${jdbc_minIdle_hlc}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc_timeBetweenEvictionRunsMillis_hlc}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc_minEvictableIdleTimeMillis_hlc}"/>
+        <property name="validationQuery" value="${jdbc_validationQuery_hlc}"/>
+        <property name="testWhileIdle" value="${jdbc_testWhileIdle_hlc}"/>
+        <property name="testOnBorrow" value="${jdbc_testOnBorrow_hlc}"/>
+        <property name="testOnReturn" value="${jdbc_testOnReturn_hlc}"/>
+
+        <property name="poolPreparedStatements" value="${jdbc_poolPreparedStatements_hlc}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc_maxPoolPreparedStatementPerConnectionSize_hlc}"/>
+    </bean>
+    <!--数据源三-->
+    <bean id="ylbDataSource" class="com.alibaba.druid.pool.DruidDataSource"
+          init-method="init" destroy-method="close">
+        <property name="url" value="${jdbc_url_ylb}"/>
+        <property name="username" value="${jdbc_username_ylb}"/>
+        <property name="password" value="${jdbc_password_ylb}"/>
+        <property name="filters" value="${jdbc_filters_ylb}"/>
+        <property name="maxActive" value="${jdbc_maxActive_ylb}"/>
+        <property name="initialSize" value="${jdbc_initialSize_ylb}"/>
+        <property name="maxWait" value="${jdbc_maxWait_ylb}"/>
+        <property name="minIdle" value="${jdbc_minIdle_ylb}"/>
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc_timeBetweenEvictionRunsMillis_ylb}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc_minEvictableIdleTimeMillis_ylb}"/>
+        <property name="validationQuery" value="${jdbc_validationQuery_ylb}"/>
+        <property name="testWhileIdle" value="${jdbc_testWhileIdle_ylb}"/>
+        <property name="testOnBorrow" value="${jdbc_testOnBorrow_ylb}"/>
+        <property name="testOnReturn" value="${jdbc_testOnReturn_ylb}"/>
+        <property name="poolPreparedStatements" value="${jdbc_poolPreparedStatements_ylb}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize"
+                  value="${jdbc_maxPoolPreparedStatementPerConnectionSize_ylb}"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          p:dataSource-ref="dataSource"/>
+    <bean id="hlcSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          p:dataSource-ref="hlcDataSource" autowire="byName"/>
+
+    <bean id="ylbSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"
+          p:dataSource-ref="ylbDataSource" autowire="byName"/>
+    <!-- spring与mybatis整合配置，扫描所有dao -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer"
+          p:basePackage="ms.platform.**.dao.**,bi.**"
+          p:sqlSessionFactoryBeanName="sqlSessionFactory"/>
+    <!-- 对数据源进行事务管理 -->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager"
+          p:dataSource-ref="dataSource"/>
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+</beans>
